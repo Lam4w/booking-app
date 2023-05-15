@@ -19,9 +19,9 @@ enum STEPS {
     CATEGORY = 0,
     LOCATION = 1,
     INFO = 2,
-    IMAGES = 3,
-    DESCRIPTION = 4,
-    PRICE = 5
+    DESCRIPTION = 3,
+    PRICE = 4,
+    IMAGES = 5,
 }
 
 const RentModal = () => {
@@ -45,7 +45,7 @@ const RentModal = () => {
             guestCount: 1,
             roomCount: 1,
             bathroomCount: 1,
-            imageSrc: '',
+            // imageSrc: '',
             price: 1,
             title: '',
             description: '',
@@ -57,10 +57,23 @@ const RentModal = () => {
     const guestCount = watch('guestCount');
     const roomCount = watch('roomCount');
     const bathroomCount = watch('bathroomCount');
-    const imageSrc = watch('imageSrc');
+    // const imageSrc = watch('imageSrc');
+    const [imageList, setImageList] = useState<string[]>([]);
+
+    let imageArr: string[] = [];
+    
     const Map = useMemo(() => dynamic(() => import('../Map'), {
         ssr: false
     }), [location])
+
+    const setUploadImageList = (value: any) => {
+        setImageList((prev) => [...prev, value]);
+    }
+
+    const removeUploadImageList = (value: any) => {
+        const filteredList = imageList.filter((item) => item !== value);
+        setImageList(filteredList);
+    }
 
     const setCutomValue = (id: string, value: any) => {
         setValue(id, value, {
@@ -79,16 +92,30 @@ const RentModal = () => {
     };
 
     const onSubmit: SubmitHandler<FieldValues> = (data) => {
-        if (step !== STEPS.PRICE) {
+        if (step !== STEPS.IMAGES) {
             return onNext();
         }
 
+        if (imageList.length === 0) {
+            return onBack();
+        }
+
+        console.log('raw data', data);
+
+        const safeData = {
+            ...data,
+            'imageSrc': [...imageList]
+        }
+
+        console.log(safeData);
+
         setIsLoading(true);
-        axios.post('/api/listing', data)
+        axios.post('/api/listing', safeData)
             .then(() => {
                 toast.success('Listing created');
                 router.refresh();
                 reset();
+                setImageList([]);
                 setStep(STEPS.CATEGORY);
                 rentModdal.onClose();
             })
@@ -101,7 +128,7 @@ const RentModal = () => {
     }
 
     const actionLabel = useMemo(() => {
-        if (step === STEPS.PRICE) {
+        if (step === STEPS.IMAGES) {
             return 'Create';
         }
          return 'Next';
@@ -184,21 +211,6 @@ const RentModal = () => {
         )
     }
 
-    if (step === STEPS.IMAGES) {
-        bodyContent = (
-            <div className="flex flex-col gap-8">
-                <Heading 
-                    title='Add a photo of your place'
-                    subtitle='Show guests what your place looks like'
-                />
-                <ImageUpLoad 
-                    value={imageSrc}
-                    onChange={(value) => setCutomValue('imageSrc', value)}
-                />
-            </div>
-        )
-    }
-
     if (step === STEPS.DESCRIPTION) {
         bodyContent = (
             <div className="flex flex-col gap-8">
@@ -244,6 +256,22 @@ const RentModal = () => {
                     register={register}
                     errors={errors}
                     required
+                />
+            </div>
+        )
+    }
+
+    if (step === STEPS.IMAGES) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading 
+                    title='Add a photo of your place'
+                    subtitle='Show guests what your place looks like'
+                />
+                <ImageUpLoad 
+                    value={imageList}
+                    onChange={(value) => setUploadImageList(value)}
+                    onRemove={(value) => removeUploadImageList(value)}
                 />
             </div>
         )

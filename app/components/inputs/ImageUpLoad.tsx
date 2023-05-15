@@ -1,19 +1,21 @@
 'use client';
 import { CldUploadWidget } from "next-cloudinary";
 import Image from "next/image";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { TbPhotoPlus } from "react-icons/tb";
+import { MdRemoveCircle } from "react-icons/md";
 
 declare global {
     var cloudinary: any;
 }
 
 interface ImageUpLoadProps {
-    onChange: (value: string) => void;
-    value: string;
+    value: string[];
+    onChange: (value: string[]) => void;
+    onRemove: (value: string) => void;
 }
 
-const ImageUpLoad: React.FC<ImageUpLoadProps> = ({ value, onChange }) => {
+const ImageUpLoad: React.FC<ImageUpLoadProps> = ({ value, onChange, onRemove }) => {
     const handleUpload = useCallback((result: any) => {
         onChange(result.info.secure_url);
     }, [onChange]);
@@ -22,30 +24,43 @@ const ImageUpLoad: React.FC<ImageUpLoadProps> = ({ value, onChange }) => {
         <CldUploadWidget 
             onUpload={handleUpload}
             uploadPreset="emjq3qec"
-            options={{
-                maxFiles: 1
-            }}
+            // options={{
+            //     maxFiles: 1
+            // }}
         >
             {({ open }) => {
                 return (
                     <div
-                        onClick={() => open?.()}
-                        className="relative cursor-pointer hover:opacity-70 transition border-dashed border-2 p-20 border-neutral-300 flex flex-col justify-center items-center gap-4 text-neutral-600"
+                        className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 relative border-dashed border-2 p-5 border-neutral-300"
                     >
-                        <TbPhotoPlus size={50}/>
-                        <div className="font-semi text-lg">
-                            Click to upload
-                        </div>
-                        {value && (
-                            <div className="absolute inset-0 w-full h-full">
-                                <Image 
-                                    alt="Upload"
-                                    fill
-                                    style={{ objectFit: 'cover'}}
-                                    src={value}
-                                />
+                        {value.length !==0 && value.map((imageSrc, index) => (
+                            <div className="relative col-span-1 h-32 flex" key={index}>
+                                <div className="w-full">
+                                    <Image 
+                                        src={imageSrc}
+                                        fill
+                                        alt="Upload"
+                                        style={{ objectFit: "cover" }}
+                                    />
+                                </div>
+                                <div 
+                                    className=" absolute top-2 right-2 z-20 text-rose-600 cursor-pointer"
+                                    onClick={() => onRemove(imageSrc)}    
+                                >
+                                    <MdRemoveCircle size={25} />
+                                </div>
                             </div>
-                        )}
+                        ))}
+
+                        <div 
+                            onClick={() => open?.()}
+                            className="col-span-1 md:col-span-1 lg:col-span-1 xl:col-span-1 flex items-center flex-col justify-center gap-4 cursor-pointer hover:opacity-70 transition h-32"
+                        >
+                            <TbPhotoPlus size={40}/>
+                            <div className="font-semi text-lg">
+                                Click to upload
+                            </div>
+                        </div>
                     </div>
                 )}
             }

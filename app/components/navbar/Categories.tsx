@@ -3,13 +3,18 @@ import Container from '../Container';
 import { TbBeach, TbMountain, TbPool } from 'react-icons/tb';
 import { GiBarn, GiBoatFishing, GiCactus, GiCastle, GiCaveEntrance, GiForestCamp, GiIsland, GiWindmill } from 'react-icons/gi';
 import { MdOutlineVilla } from 'react-icons/md';
-import { IoDiamond } from 'react-icons/io5';
+import { IoDiamond, IoBedOutline } from 'react-icons/io5';
 import { FaSkiing } from 'react-icons/fa';
 import { BsSnow } from 'react-icons/bs';
 import CategoryBox from '../CategoryBox';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 export const categories = [ 
+    {
+        label: 'Rooms',
+        icon: IoBedOutline,
+        description: 'This property has many rooms!'
+    },
     {
         label: 'Beach',
         icon: TbBeach,
@@ -51,7 +56,7 @@ export const categories = [
         description: 'This property has skiing activities!'
     },
     {
-        label: 'Castle',
+        label: 'Castles',
         icon: GiCastle,
         description: 'This property is in a castle!'
     },
@@ -66,7 +71,7 @@ export const categories = [
         description: 'This property is in the arctic!'
     },
     {
-        label: 'Cave',
+        label: 'Caves',
         icon: GiCaveEntrance,
         description: 'This property is in a cave!'
     },
