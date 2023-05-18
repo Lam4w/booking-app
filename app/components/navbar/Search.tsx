@@ -53,10 +53,10 @@ const Search = () => {
             onClick={serachModal.onOpen}
         >
             <div className="flex flex-row items-center justify-between">
-                <div className="text-sm font-semibold px-6">
+                <div className="text-sm font-bold px-6">
                     {locationLabel}
                 </div>
-                <div className="hidden sm:block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center">
+                <div className="hidden sm:block text-sm font-bold px-6 border-x-[1px] flex-1 text-center">
                     {durationLabel}
                 </div>
                 <div className="text-sm pl-6 pr-2 text-gray-600 flex flex-row items-center gap-3">

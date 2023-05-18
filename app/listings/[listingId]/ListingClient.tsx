@@ -100,7 +100,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
     return (
         <Container>
-            <div className="max-w-screen-lg mx-auto">
+            <div className="max-w-[1120px] mx-auto">
                 <div className="flex flex-col gap-6">
                     <ListingHead 
                         title={listing.title}
@@ -119,16 +119,18 @@ const ListingClient: React.FC<ListingClientProps> = ({
                             bathroomCount={listing.bathroomCount}
                             locationValue={listing.locationValue}
                         />
-                        <div className="order-first mb-10 md:order-last md:col-span-3">
-                            <ListingReservation 
-                                price={listing.price}
-                                totalPrice={totalPrice}
-                                onChangeDate={(value) => setDateRange(value)}
-                                dateRange={dateRange}
-                                onSubmit={onCreateReservation}
-                                disabled={isLoading}
-                                disabledDates={disabledDate}
-                            />
+                        <div className="order-first mb-10 md:order-last md:col-span-3 w-full h-full">
+                            <div className="sticky top-40">
+                                <ListingReservation 
+                                    price={listing.price}
+                                    totalPrice={totalPrice}
+                                    onChangeDate={(value) => setDateRange(value)}
+                                    dateRange={dateRange}
+                                    onSubmit={onCreateReservation}
+                                    disabled={isLoading}
+                                    disabledDates={disabledDate}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

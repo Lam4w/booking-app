@@ -63,8 +63,6 @@ const Modal: React.FC<ModalProps> = ({
         return null;
     }
 
-
-
     return (
         <>
             <div className="flex justify-center items-center overflow-x-hidden overflow-y-auto

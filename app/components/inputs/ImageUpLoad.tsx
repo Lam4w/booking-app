@@ -31,7 +31,7 @@ const ImageUpLoad: React.FC<ImageUpLoadProps> = ({ value, onChange, onRemove }) 
             {({ open }) => {
                 return (
                     <div
-                        className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 relative border-dashed border-2 p-5 border-neutral-300"
+                        className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-2 relative border-dashed border-2 p-5 border-neutral-300 overflow-y-scroll max-h-80"
                     >
                         {value.length !==0 && value.map((imageSrc, index) => (
                             <div className="relative col-span-1 h-32 flex" key={index}>

@@ -96,8 +96,9 @@ const RentModal = () => {
             return onNext();
         }
 
-        if (imageList.length === 0) {
-            return onBack();
+        if (imageList.length < 4) {
+            toast.error('You need to upload atleast 5 images');
+            return;
         }
 
         console.log('raw data', data);

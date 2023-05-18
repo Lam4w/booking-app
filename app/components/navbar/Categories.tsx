@@ -6,6 +6,8 @@ import { MdOutlineVilla } from 'react-icons/md';
 import { IoDiamond, IoBedOutline } from 'react-icons/io5';
 import { FaSkiing } from 'react-icons/fa';
 import { BsSnow } from 'react-icons/bs';
+import { RiCactusLine } from 'react-icons/ri';
+import { TbBuildingPavilion } from 'react-icons/tb';
 import CategoryBox from '../CategoryBox';
 import { usePathname, useSearchParams } from 'next/navigation';
 
@@ -13,7 +15,7 @@ export const categories = [
     {
         label: 'Rooms',
         icon: IoBedOutline,
-        description: 'This property has many rooms!'
+        description: 'Your own room in a home, plus access to shared spaces.'
     },
     {
         label: 'Beach',
@@ -61,9 +63,9 @@ export const categories = [
         description: 'This property is in a castle!'
     },
     {
-        label: 'Camping',
-        icon: GiForestCamp,
-        description: 'This property has camping activities!'
+        label: 'Hanoks',
+        icon: TbBuildingPavilion,
+        description: 'This property is a hanok!'
     },
     {
         label: 'Arctic',
@@ -77,8 +79,8 @@ export const categories = [
     },
     {
         label: 'Desert',
-        icon: GiCactus,
-        description: 'This property is the desert!'
+        icon: RiCactusLine,
+        description: 'This property is in the desert!'
     },
     {
         label: 'Barns',
