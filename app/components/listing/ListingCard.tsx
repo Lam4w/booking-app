@@ -12,11 +12,14 @@ import { IoChevronBackOutline, IoChevronForwardOutline } from 'react-icons/io5';
 interface ListingCardProps {
     data: SafeListing;
     reservation?: SafeReservation;
-    onAction?: (id: string) => void;
     disabled?: boolean;
+    currentUser?: SafeUser | null;
     actionLabel?: string;
     actionId?: string;
-    currentUser?: SafeUser | null;
+    onAction?: (id: string) => void;
+    secondaryActionLabel?: string;
+    secondaryActionId?: string;
+    secondaryOnAction?: (data: SafeListing) => void;
 }
 
 const ListingCard: React.FC<ListingCardProps> = ({
@@ -26,7 +29,10 @@ const ListingCard: React.FC<ListingCardProps> = ({
     disabled,
     actionLabel,
     actionId = '',
-    currentUser
+    currentUser,
+    secondaryActionLabel,
+    secondaryActionId ='',
+    secondaryOnAction
 }) => {
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const router = useRouter();
@@ -46,7 +52,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         setCurrentIndex(newIndex);
     };
 
-    const handleCanel = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    const handleCancel = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
         e.stopPropagation();
         if (disabled) {
             return;
@@ -54,6 +60,15 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
         onAction?.(actionId);
     }, [onAction, actionId, disabled]);
+
+    const handleEdit = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+        e.stopPropagation();
+        if (disabled) {
+            return;
+        }
+
+        secondaryOnAction?.(data);
+    }, [secondaryOnAction, data, disabled]);
 
     const price = useMemo(() => {
         if (reservation) {
@@ -133,12 +148,22 @@ const ListingCard: React.FC<ListingCardProps> = ({
                         </div>
                     )}
                 </div>
+            </div>
+            <div className="flex flex-row items-center gap-4 w-full pt-2">
+                {secondaryOnAction && secondaryActionLabel && (
+                    <Button 
+                        disabled={disabled}
+                        small
+                        label={secondaryActionLabel}
+                        onClick={handleEdit}
+                    />
+                )}
                 {onAction && actionLabel && (
                     <Button 
                         disabled={disabled}
                         small
                         label={actionLabel}
-                        onClick={handleCanel}
+                        onClick={handleCancel}
                     />
                 )}
             </div>

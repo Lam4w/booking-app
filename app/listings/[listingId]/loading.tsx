@@ -1,6 +1,7 @@
 'use client';
 import ListingHeadSkeleton from "@/app/components/listing/ListingHeadSkeleton";
 import Container from "@/app/components/Container";
+import ListingInfoSkeleton from "@/app/components/listing/ListingInfoSkeleton";
 
 const Loading = () => {
     return (
@@ -8,7 +9,7 @@ const Loading = () => {
             <div className="max-w-[1120px] mx-auto overflow-hidden">
                 <div className="flex flex-col gap-6">
                     <ListingHeadSkeleton />
-                    <ListingHeadSkeleton /> 
+                    <ListingInfoSkeleton /> 
                 </div>
             </div>
         </Container>

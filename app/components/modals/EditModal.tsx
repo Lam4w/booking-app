@@ -2,31 +2,34 @@
 import { useMemo, useState } from 'react';
 import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 import { categories } from '../navbar/Categories';
-import dynamic from 'next/dynamic';
 import Modal from './Modal';
-import useRentModal from '@/app/hooks/useRentModal';
 import Heading from '../Heading';
 import CategoryInput from '../inputs/CategoryInput';
-import CountrySelect from '../inputs/CountrySelect';
 import Counter from '../inputs/Counter';
 import ImageUpLoad from '../inputs/ImageUpLoad';
 import Input from '../inputs/Input';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import useEditModal from '@/app/hooks/useEditModal';
+import { SafeListing } from '@/app/types';
+
+interface EditModalProps {
+    data: SafeListing 
+    onAction: () => void;
+}
 
 enum STEPS {
     CATEGORY = 0,
-    LOCATION = 1,
-    INFO = 2,
-    DESCRIPTION = 3,
-    PRICE = 4,
-    IMAGES = 5,
+    INFO = 1,
+    DESCRIPTION = 2,
+    PRICE = 3,
+    IMAGES = 4,
 }
 
-const RentModal = () => {
+const EditModal: React.FC<EditModalProps> = ({ data, onAction }) => {
     const router = useRouter();
-    const rentModdal = useRentModal();
+    const editModdal = useEditModal();
     const [isLoading, setIsLoading] = useState(false);
     const [step, setStep] = useState(STEPS.CATEGORY);
     const {
@@ -40,29 +43,23 @@ const RentModal = () => {
         reset
     } = useForm<FieldValues>({
         defaultValues: {
-            category: '',
-            location: null,
-            guestCount: 1,
-            roomCount: 1,
-            bathroomCount: 1,
-            // imageSrc: '',
-            price: 1,
-            title: '',
-            description: '',
+            category: data.category,
+            location: data.locationValue,
+            guestCount: data.guestCount,
+            roomCount: data.roomCount,
+            bathroomCount: data.bathroomCount,
+            price: data.price,
+            title: data.title,
+            description: data.description,
         }
     });
-
+    const listingId = data.id;
     const category = watch('category');
-    const location = watch('location');
     const guestCount = watch('guestCount');
     const roomCount = watch('roomCount');
     const bathroomCount = watch('bathroomCount');
-    const [imageList, setImageList] = useState<string[]>([]);
+    const [imageList, setImageList] = useState<string[]>(data.imageSrc);
     
-    const Map = useMemo(() => dynamic(() => import('../Map'), {
-        ssr: false
-    }), [location])
-
     const setUploadImageList = (value: any) => {
         setImageList((prev) => [...prev, value]);
     }
@@ -104,14 +101,15 @@ const RentModal = () => {
         }
 
         setIsLoading(true);
-        axios.post('/api/listing', safeData)
+        axios.patch(`/api/listing/${listingId}`, safeData)
             .then(() => {
-                toast.success('Listing created');
+                toast.success('Listing updated');
                 router.refresh();
                 reset();
                 setImageList([]);
                 setStep(STEPS.CATEGORY);
-                rentModdal.onClose();
+                editModdal.onClose();
+                onAction();
             })
             .catch(() => {
                 toast.error('Something went wrong');                
@@ -123,7 +121,7 @@ const RentModal = () => {
 
     const actionLabel = useMemo(() => {
         if (step === STEPS.IMAGES) {
-            return 'Create';
+            return 'Update';
         }
          return 'Next';
     }, [step]);
@@ -156,22 +154,6 @@ const RentModal = () => {
             </div>
         </div>
     )
-
-    if (step === STEPS.LOCATION) {
-        bodyContent = (
-            <div className="flex flex-col gap-8">
-                <Heading 
-                    title='Where is your place located?'
-                    subtitle='Help guests find you!'
-                />
-                <CountrySelect 
-                    value={location}
-                    onChange={(value) => setCutomValue('location', value)}
-                />
-                <Map center={location?.latlng}/>
-            </div>
-        )
-    }
 
     if (step === STEPS.INFO) {
         bodyContent = (
@@ -274,8 +256,8 @@ const RentModal = () => {
     return (
         <Modal 
             title='Airbnb your home'
-            isOpen={rentModdal.isOpen}
-            onClose={rentModdal.onClose}
+            isOpen={editModdal.isOpen}
+            onClose={editModdal.onClose}
             onSubmit={handleSubmit(onSubmit)}
             actionLabel={actionLabel}
             secondaryActionLabel={secondaryActionLabel}
@@ -285,4 +267,4 @@ const RentModal = () => {
     )
 }
 
-export default RentModal
+export default EditModal
